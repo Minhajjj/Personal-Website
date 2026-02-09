@@ -4,6 +4,7 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { FaRankingStar } from "react-icons/fa6";
 import { FaRegHandshake } from "react-icons/fa";
 import { animateCards } from "@/lib/gsapAnimations";
+import { ScrollTrigger } from "gsap/ScrollTrigger"; // ← MISSING IMPORT
 
 const HeroCard = () => {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -17,12 +18,12 @@ const HeroCard = () => {
     {
       logo: <IoChatbubbleEllipsesOutline size={30} />,
       title: "Clear Communication",
-      text: "Every brand needs a story that clicks. I make sure your audience quickly understands who you are, and why you’re the right choice.",
+      text: "Every brand needs a story that clicks. I make sure your audience quickly understands who you are, and why you're the right choice.",
     },
     {
       logo: <FaRankingStar size={30} />,
       title: "Stand Out in the Crowd",
-      text: "Generic templates don’t cut it. I craft unique, tailored experiences that set you apart from your competitors.",
+      text: "Generic templates don't cut it. I craft unique, tailored experiences that set you apart from your competitors.",
     },
     {
       logo: <FaRegHandshake size={30} />,
@@ -33,12 +34,19 @@ const HeroCard = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const validCards = cardRefs.current.filter(
-      (el): el is HTMLDivElement => el !== null
-    );
-    animateCards(validCards);
+
+    // Add small delay to ensure DOM is fully ready
+    const timer = setTimeout(() => {
+      const validCards = cardRefs.current.filter(
+        (el): el is HTMLDivElement => el !== null,
+      );
+      if (validCards.length > 0) {
+        animateCards(validCards);
+      }
+    }, 100);
 
     return () => {
+      clearTimeout(timer);
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);

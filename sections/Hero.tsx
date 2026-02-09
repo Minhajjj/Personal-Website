@@ -8,7 +8,7 @@ import {
   animateLines,
   animateMinhaj,
 } from "@/lib/gsapAnimations";
-import React, { useRef, useEffect, use } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 const Hero = () => {
   const minhajRef = useRef<MinhajRef>(null);
@@ -16,30 +16,60 @@ const Hero = () => {
   const para2Ref = useRef<HTMLParagraphElement>(null);
   const dref1 = useRef<HTMLDivElement>(null);
   const href1 = useRef<HTMLHeadingElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
+  // Ensure component is mounted before running animations
   useEffect(() => {
-    if (minhajRef.current?.text) {
-      animateMinhaj(minhajRef.current);
-    }
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (dref1.current) {
-      animateHeroDiv(dref1.current);
-    }
-  }, []);
+    if (!isMounted || typeof window === "undefined") return;
+
+    const timer = setTimeout(() => {
+      if (minhajRef.current?.text) {
+        animateMinhaj(minhajRef.current);
+      }
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [isMounted]);
 
   useEffect(() => {
-    if (para1Ref.current && para2Ref.current) {
-      animateLines([para1Ref.current, para2Ref.current]);
-    }
-  }, []);
+    if (!isMounted || typeof window === "undefined") return;
+
+    const timer = setTimeout(() => {
+      if (dref1.current) {
+        animateHeroDiv(dref1.current);
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [isMounted]);
 
   useEffect(() => {
-    if (href1.current) {
-      animateHeading(href1.current);
-    }
-  }, []);
+    if (!isMounted || typeof window === "undefined") return;
+
+    const timer = setTimeout(() => {
+      if (para1Ref.current && para2Ref.current) {
+        animateLines([para1Ref.current, para2Ref.current]);
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [isMounted]);
+
+  useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+
+    const timer = setTimeout(() => {
+      if (href1.current) {
+        animateHeading(href1.current);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [isMounted]);
 
   return (
     <div className="min-h-screen flex flex-col justify-center mb-40 gap-50 px-4 sm:px-6 md:px-0">
@@ -54,16 +84,14 @@ const Hero = () => {
           </p>
         </div>
 
-        <div 
+        <div
           ref={dref1}
           className="flex font-bold font-sans flex-col mt-60 gap-2 justify-center px-3 text-center text-[clamp(2rem,5vw,3rem)] leading-[1.1] md:px-0 md:items-center md:text-center py-20"
         >
           <p className="Line1">
             Crafting distinctive brands, websites, and content
           </p>
-          <p className="Line2">
-            that help forward-thinking companies thrive.
-          </p>
+          <p className="Line2">that help forward-thinking companies thrive.</p>
         </div>
       </section>
 

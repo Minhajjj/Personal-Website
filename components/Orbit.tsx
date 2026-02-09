@@ -59,12 +59,14 @@ const Orbit: React.FC = () => {
 
   // Ensure component is mounted before animations
   useEffect(() => {
-    setIsLoaded(true);
+    if (typeof window !== "undefined") {
+      setIsLoaded(true);
+    }
   }, []);
 
   useEffect(() => {
-    if (!isLoaded) return;
-    
+    if (!isLoaded || typeof window === "undefined") return;
+
     const timer = setTimeout(() => {
       const ctx = gsap.context(() => {
         if (iconRef.current.length > 0) {
@@ -72,14 +74,14 @@ const Orbit: React.FC = () => {
         }
       });
       return () => ctx.revert();
-    }, 100); // Small delay to ensure DOM is ready
+    }, 100);
 
     return () => clearTimeout(timer);
   }, [isLoaded]);
 
   useEffect(() => {
-    if (!isLoaded) return;
-    
+    if (!isLoaded || typeof window === "undefined") return;
+
     const timer = setTimeout(() => {
       const ctx = gsap.context(() => {
         if (ringRef.current.length > 0) {
@@ -87,7 +89,7 @@ const Orbit: React.FC = () => {
         }
       });
       return () => ctx.revert();
-    }, 150); // Slightly longer delay for rings
+    }, 150);
 
     return () => clearTimeout(timer);
   }, [isLoaded]);
@@ -99,11 +101,8 @@ const Orbit: React.FC = () => {
   const ring2 = shuffled.slice(5, 13);
   const ring3 = shuffled.slice(13);
 
-  // Use percentage-based radii that will scale with container
-  // These are now relative to the container size
   const getRadii = () => {
-    // Base radii as percentages of container width
-    return [80, 140, 200]; // These will be scaled by CSS
+    return [80, 140, 200];
   };
 
   const radii = getRadii();
@@ -119,8 +118,8 @@ const Orbit: React.FC = () => {
         ringIndex === 0
           ? i
           : ringIndex === 1
-          ? i + ring1.length
-          : i + ring1.length + ring2.length;
+            ? i + ring1.length
+            : i + ring1.length + ring2.length;
 
       return (
         <div
@@ -129,7 +128,7 @@ const Orbit: React.FC = () => {
           }}
           key={tool.name}
           className="orbit-item"
-          style={{ 
+          style={{
             left: `calc(50% + ${x}px)`,
             top: `calc(50% + ${y}px)`,
           }}
@@ -162,9 +161,9 @@ const Orbit: React.FC = () => {
             ringRef.current[i] = el;
           }}
           className="orbit"
-          style={{ 
-            width: `${2 * radius}px`, 
-            height: `${2 * radius}px` 
+          style={{
+            width: `${2 * radius}px`,
+            height: `${2 * radius}px`,
           }}
         >
           {/* Render icons for this ring */}
