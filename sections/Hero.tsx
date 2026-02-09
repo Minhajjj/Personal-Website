@@ -8,7 +8,8 @@ import {
   animateLines,
   animateMinhaj,
 } from "@/lib/gsapAnimations";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useLayoutEffect, useState } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const Hero = () => {
   const minhajRef = useRef<MinhajRef>(null);
@@ -18,58 +19,59 @@ const Hero = () => {
   const href1 = useRef<HTMLHeadingElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Ensure component is mounted before running animations
+  // Ensure component is mounted
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
+  // Use useLayoutEffect for synchronous animations BEFORE paint
+  useLayoutEffect(() => {
     if (!isMounted || typeof window === "undefined") return;
 
+    // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
+      // Initialize all animations
       if (minhajRef.current?.text) {
         animateMinhaj(minhajRef.current);
       }
+
+      if (dref1.current) {
+        animateHeroDiv(dref1.current);
+      }
+
+      if (para1Ref.current && para2Ref.current) {
+        animateLines([para1Ref.current, para2Ref.current]);
+      }
+
+      if (href1.current) {
+        animateHeading(href1.current);
+      }
+
+      // CRITICAL: Refresh ScrollTrigger after ALL animations are set up
+      setTimeout(() => {
+        ScrollTrigger.refresh(true);
+        console.log("✅ ScrollTrigger refreshed");
+      }, 100);
     }, 50);
 
     return () => clearTimeout(timer);
   }, [isMounted]);
 
+  // Additional refresh on window load (for fonts, images)
   useEffect(() => {
-    if (!isMounted || typeof window === "undefined") return;
+    if (typeof window === "undefined") return;
 
-    const timer = setTimeout(() => {
-      if (dref1.current) {
-        animateHeroDiv(dref1.current);
-      }
-    }, 100);
+    const handleLoad = () => {
+      setTimeout(() => {
+        ScrollTrigger.refresh(true);
+        console.log("✅ ScrollTrigger refreshed on load");
+      }, 200);
+    };
 
-    return () => clearTimeout(timer);
-  }, [isMounted]);
+    window.addEventListener("load", handleLoad);
 
-  useEffect(() => {
-    if (!isMounted || typeof window === "undefined") return;
-
-    const timer = setTimeout(() => {
-      if (para1Ref.current && para2Ref.current) {
-        animateLines([para1Ref.current, para2Ref.current]);
-      }
-    }, 150);
-
-    return () => clearTimeout(timer);
-  }, [isMounted]);
-
-  useEffect(() => {
-    if (!isMounted || typeof window === "undefined") return;
-
-    const timer = setTimeout(() => {
-      if (href1.current) {
-        animateHeading(href1.current);
-      }
-    }, 200);
-
-    return () => clearTimeout(timer);
-  }, [isMounted]);
+    return () => window.removeEventListener("load", handleLoad);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col justify-center mb-40 gap-50 px-4 sm:px-6 md:px-0">
@@ -89,13 +91,13 @@ const Hero = () => {
           className="flex font-bold font-sans flex-col mt-60 gap-2 justify-center px-3 text-center text-[clamp(2rem,5vw,3rem)] leading-[1.1] md:px-0 md:items-center md:text-center py-20"
         >
           <p className="Line1">
-            Crafting distinctive brands, websites, and content
+            Crafting distinctive brands, websites, content
           </p>
           <p className="Line2">that help forward-thinking companies thrive.</p>
         </div>
       </section>
 
-      <section className="w-full mt-[-150px] overflow-hidden">
+      <section className="w-full -mt-37.5 overflow-hidden">
         <h2
           ref={href1}
           className="font-sans text-center text-4xl py-25 font-semibold"

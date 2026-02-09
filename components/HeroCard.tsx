@@ -1,13 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { GoGoal } from "react-icons/go";
 import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { FaRankingStar } from "react-icons/fa6";
 import { FaRegHandshake } from "react-icons/fa";
 import { animateCards } from "@/lib/gsapAnimations";
-import { ScrollTrigger } from "gsap/ScrollTrigger"; // ← MISSING IMPORT
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const HeroCard = () => {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   const cards = [
     {
@@ -33,15 +34,23 @@ const HeroCard = () => {
   ];
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    setIsMounted(true);
+  }, []);
 
-    // Add small delay to ensure DOM is fully ready
+  useLayoutEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+
     const timer = setTimeout(() => {
       const validCards = cardRefs.current.filter(
         (el): el is HTMLDivElement => el !== null,
       );
       if (validCards.length > 0) {
         animateCards(validCards);
+
+        // Refresh ScrollTrigger after animation setup
+        setTimeout(() => {
+          ScrollTrigger.refresh(true);
+        }, 100);
       }
     }, 100);
 
@@ -49,7 +58,7 @@ const HeroCard = () => {
       clearTimeout(timer);
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, []);
+  }, [isMounted]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 font-sans gap-6 w-full max-w-4xl">
@@ -64,7 +73,6 @@ const HeroCard = () => {
           <div className="mb-20 text-left flex text-[#333333]">{card.logo}</div>
           <h5 className="font-semibold text-xl mb-5 text-left">{card.title}</h5>
 
-          {/* Hidden text appears on hover, absolutely positioned */}
           <p className="absolute inset-0 flex items-center justify-center p-4 text-gray-700 bg-[#E1E0D7] opacity-0 transition-opacity duration-500 group-hover:opacity-100">
             {card.text}
           </p>

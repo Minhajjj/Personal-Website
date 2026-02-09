@@ -1,6 +1,5 @@
-// gsapAnimations.ts
-import { RefObject } from "react";
 import gsap from "gsap";
+import { RefObject } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -1669,3 +1668,19 @@ export const gsapAnimations = {
 };
 
 export default gsapAnimations;
+
+// Add this at the bottom of gsapAnimations.ts
+
+export const initializeScrollTrigger = () => {
+  if (typeof window === "undefined") return;
+  
+  // Force ScrollTrigger to recalculate ALL positions
+  ScrollTrigger.refresh(true);
+  
+  // Also refresh on window load (for images, fonts, etc.)
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      ScrollTrigger.refresh(true);
+    }, 100);
+  });
+};
