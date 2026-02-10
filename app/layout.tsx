@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import LenisProvider from "@/components/LenisProvider";
 import ScrollTriggerProvider from "@/components/ScrollTriggerProvider";
 
 export const metadata: Metadata = {
@@ -27,10 +28,12 @@ export default function RootLayout({
       <body
         className={`${bebas.variable} ${GeistSans.variable} ${GeistMono.variable} font-sans`}
       >
-        <ScrollTriggerProvider>
-          <Navbar />
-          {children}
-        </ScrollTriggerProvider>
+        <LenisProvider>
+          <ScrollTriggerProvider>
+            <Navbar />
+            {children}
+          </ScrollTriggerProvider>
+        </LenisProvider>
       </body>
     </html>
   );

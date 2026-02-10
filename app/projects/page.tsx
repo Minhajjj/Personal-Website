@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { FaExternalLinkAlt, FaArrowRight } from "react-icons/fa";
+import { FaExternalLinkAlt } from "react-icons/fa";
 import { gsapAnimations } from "@/lib/gsapAnimations";
 import Image from "next/image";
 
@@ -84,9 +84,14 @@ const PROJECTS: Project[] = [
 // ============================================================================
 
 const VerticalScrollPortfolio: React.FC = () => {
-  // State
+  // State - Initialize with proper mobile check
   const [activeProject, setActiveProject] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
 
   // Refs
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -103,9 +108,11 @@ const VerticalScrollPortfolio: React.FC = () => {
   // Check if mobile
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const isMobileView = window.innerWidth < 768;
+      setIsMobile(isMobileView);
     };
 
+    // Initial check
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
@@ -239,7 +246,20 @@ const VerticalScrollPortfolio: React.FC = () => {
 
   if (isMobile) {
     return (
-      <div className="bg-[#EAE9E4] min-h-screen w-full font-sans text-[#1a1a1a]">
+      <div
+        className="bg-[#EAE9E4] w-full font-sans text-[#1a1a1a]"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: "100vh",
+          width: "100vw",
+          overflow: "hidden",
+          zIndex: 1000,
+        }}
+      >
         {/* Mobile Header */}
         <div className="fixed top-0 left-0 right-0 bg-[#EAE9E4]/95 backdrop-blur-sm border-b border-[#1a1a1a]/5 z-50 px-4 py-3">
           <div className="flex justify-between items-center">
@@ -263,21 +283,33 @@ const VerticalScrollPortfolio: React.FC = () => {
         {/* Mobile Scroll Container */}
         <div
           ref={mobileScrollRef}
-          className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar mt-16"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          className="flex overflow-x-auto snap-x snap-mandatory pt-16 pb-20"
+          style={{
+            height: "100vh",
+            width: "100vw",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            WebkitOverflowScrolling: "touch",
+            overflowX: "auto",
+            overflowY: "hidden",
+          }}
         >
           {PROJECTS.map((project, pIndex) => (
             <div
               key={project.id}
-              className="min-w-full snap-center flex flex-col"
+              className="min-w-full snap-center flex flex-col flex-shrink-0"
+              style={{ width: "100vw", height: "100vh", minHeight: "100vh" }}
             >
               {/* Image Gallery */}
               <div className="px-4 py-6">
-                <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4">
+                <div
+                  className="flex gap-3 overflow-x-auto pb-4"
+                  style={{ overflowX: "auto" }}
+                >
                   {project.images.map((img, iIndex) => (
                     <div
                       key={iIndex}
-                      className="min-w-[85vw] snap-center aspect-4/3 bg-white shadow-lg overflow-hidden rounded-lg"
+                      className="min-w-[85vw] flex-shrink-0 aspect-4/3 bg-white shadow-lg overflow-hidden rounded-lg"
                     >
                       <Image
                         src={`/${img}`}
@@ -292,7 +324,7 @@ const VerticalScrollPortfolio: React.FC = () => {
               </div>
 
               {/* Project Details */}
-              <div className="px-6 pb-8 flex-1">
+              <div className="px-6 pb-8 flex-1 overflow-y-auto" style={{ maxHeight: "calc(100vh - 200px)" }}>
                 <div className="flex items-center gap-3 mb-4">
                   <span className="h-0.5 w-8 bg-[#1a1a1a]"></span>
                   <span className="text-xs font-bold tracking-[0.2em] uppercase opacity-60">
@@ -310,7 +342,7 @@ const VerticalScrollPortfolio: React.FC = () => {
                   {project.fullDescription}
                 </p>
 
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2">
                   {project.technologies.map((tech) => (
                     <span
                       key={tech}
@@ -320,31 +352,13 @@ const VerticalScrollPortfolio: React.FC = () => {
                     </span>
                   ))}
                 </div>
-
-                <div className="flex gap-3">
-                  <a
-                    href={project.liveUrl}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1a1a] text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-[#1a1a1a]/90 transition-colors"
-                  >
-                    <span>View Project</span>
-                    <FaArrowRight className="text-xs" />
-                  </a>
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      className="px-4 py-3 bg-white border border-[#1a1a1a]/10 rounded-lg hover:bg-[#1a1a1a]/5 transition-colors"
-                    >
-                      <FaExternalLinkAlt className="text-[#1a1a1a]" />
-                    </a>
-                  )}
-                </div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Mobile Footer Indicator */}
-        <div className="fixed bottom-4 left-0 right-0 flex justify-center pointer-events-none">
+        <div className="fixed bottom-4 left-0 right-0 flex justify-center pointer-events-none z-10">
           <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
             <span className="text-xs font-bold">
               {activeProject + 1} / {PROJECTS.length}
@@ -356,7 +370,7 @@ const VerticalScrollPortfolio: React.FC = () => {
   }
 
   // ============================================================================
-  // DESKTOP/TABLET RENDER (UNCHANGED)
+  // DESKTOP/TABLET RENDER
   // ============================================================================
 
   return (
@@ -364,7 +378,7 @@ const VerticalScrollPortfolio: React.FC = () => {
       {/* LEFT: Project Navigation / Counter */}
       <div
         ref={counterRef}
-        className="w-24 md:w-32 lg:w-48 shrink-0 flex flex-col justify-between py-12 items-center border-r border-[#1a1a1a]/5 bg-[#EAE9E4] z-20 project-counter relative"
+        className="w-20 md:w-24 lg:w-32 xl:w-48 shrink-0 flex flex-col justify-between py-8 md:py-12 items-center border-r border-[#1a1a1a]/5 bg-[#EAE9E4] z-20 project-counter relative"
       >
         <div className="text-xs font-bold tracking-[0.2em] uppercase origin-bottom-left -rotate-90 translate-y-12 opacity-40">
           Portfolio 2024
@@ -392,14 +406,14 @@ const VerticalScrollPortfolio: React.FC = () => {
       {/* MID: Image Scroller */}
       <div
         ref={scrollerRef}
-        className="w-full md:w-112.5 lg:w-150 shrink-0 border-r border-[#1a1a1a]/5 relative bg-[#E5E4DE] z-10 scroller-section"
+        className="w-full md:w-[350px] lg:w-[450px] xl:w-[600px] shrink-0 border-r border-[#1a1a1a]/5 relative bg-[#E5E4DE] z-10 scroller-section"
       >
         <div
           ref={scrollContainerRef}
           className="h-full overflow-y-auto overflow-x-hidden no-scrollbar scroll-smooth"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          <div className="py-[50vh] flex flex-col items-center gap-32 px-8">
+          <div className="py-[50vh] flex flex-col items-center gap-24 md:gap-28 lg:gap-32 px-4 md:px-6 lg:px-8">
             {PROJECTS.map((project, pIndex) => (
               <div key={project.id} className="flex flex-col gap-12 w-full">
                 {project.images.map((img, iIndex) => {
@@ -444,33 +458,33 @@ const VerticalScrollPortfolio: React.FC = () => {
       </div>
 
       {/* RIGHT: Project Details */}
-      <div className="flex-1 hidden md:flex flex-col justify-center px-12 lg:px-24 bg-[#EAE9E4] details-section relative overflow-hidden">
-        <div className="absolute right-[-5%] top-1/2 -translate-y-1/2 text-[40vh] font-black text-[#1a1a1a] opacity-[0.03] pointer-events-none select-none leading-none">
+      <div className="flex-1 hidden md:flex flex-col justify-center px-4 md:px-6 lg:px-12 xl:px-24 bg-[#EAE9E4] details-section relative overflow-y-auto">
+        <div className="absolute right-[-5%] top-1/2 -translate-y-1/2 text-[30vh] md:text-[35vh] lg:text-[40vh] font-black text-[#1a1a1a] opacity-[0.03] pointer-events-none select-none leading-none">
           {PROJECTS[activeProject].number}
         </div>
 
         <div
           ref={rightContentRef}
-          className="max-w-2xl relative z-10 -ml-12.5"
+          className="max-w-full md:max-w-xl lg:max-w-2xl relative z-10 py-8 md:py-12"
         >
-          <div className="flex items-center gap-4 mb-6">
-            <span className="h-0.5 w-12 bg-[#1a1a1a]"></span>
-            <span className="text-sm font-bold tracking-[0.2em] uppercase opacity-60">
+          <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+            <span className="h-0.5 w-8 md:w-12 bg-[#1a1a1a]"></span>
+            <span className="text-xs md:text-sm font-bold tracking-[0.2em] uppercase opacity-60">
               {PROJECTS[activeProject].category}
             </span>
           </div>
 
-          <h1 className="text-7xl lg:text-8xl font-black mb-6 text-[#1a1a1a] leading-[0.9] tracking-tighter">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-black mb-4 md:mb-6 text-[#1a1a1a] leading-[0.9] tracking-tighter">
             {PROJECTS[activeProject].title}
           </h1>
 
-          <div className="h-px w-full bg-[#1a1a1a]/10 my-8"></div>
+          <div className="h-px w-full bg-[#1a1a1a]/10 my-4 md:my-8"></div>
 
-          <p className="text-xl lg:text-2xl font-light leading-relaxed text-[#1a1a1a]/80 mb-10 max-w-lg">
+          <p className="text-base md:text-lg lg:text-xl xl:text-2xl font-light leading-relaxed text-[#1a1a1a]/80 mb-6 md:mb-10 max-w-full">
             {PROJECTS[activeProject].fullDescription}
           </p>
 
-          <div className="flex flex-wrap gap-2 mb-12">
+          <div className="flex flex-wrap gap-2">
             {PROJECTS[activeProject].technologies.map((tech) => (
               <span
                 key={tech}
@@ -480,16 +494,6 @@ const VerticalScrollPortfolio: React.FC = () => {
               </span>
             ))}
           </div>
-
-          <a
-            href={PROJECTS[activeProject].liveUrl}
-            className="group inline-flex items-center gap-4 text-[#1a1a1a] text-sm font-black uppercase tracking-widest hover:opacity-70 transition-opacity"
-          >
-            <span className="border-b-2 border-[#1a1a1a] pb-1">
-              View Project
-            </span>
-            <FaArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
-          </a>
         </div>
       </div>
     </div>

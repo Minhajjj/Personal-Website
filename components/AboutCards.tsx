@@ -4,6 +4,7 @@ import { IoMdColorPalette } from "react-icons/io";
 import { CiGlobe } from "react-icons/ci";
 import { MdHandshake } from "react-icons/md";
 import { animateCards } from "@/lib/gsapAnimations";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const AboutCards = () => {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -39,7 +40,10 @@ const AboutCards = () => {
     animateCards(validCards);
 
     return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      // Check if ScrollTrigger is available before using it
+      if (typeof ScrollTrigger !== "undefined" && ScrollTrigger.getAll) {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      }
     };
   }, []);
 

@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLenis } from "lenis/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,10 +11,13 @@ export default function ScrollTriggerProvider({
 }: {
   children: React.ReactNode;
 }) {
+  // CRITICAL: Sync Lenis with ScrollTrigger
+  const lenis = useLenis(ScrollTrigger.update);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Initial refresh
+    // Sync ScrollTrigger with Lenis smooth scrolling
     ScrollTrigger.refresh(true);
 
     // Refresh after fonts load
@@ -50,7 +54,7 @@ export default function ScrollTriggerProvider({
       window.removeEventListener("load", handleLoad);
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [lenis]);
 
   return <>{children}</>;
 }
