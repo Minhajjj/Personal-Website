@@ -713,7 +713,7 @@ export default function DeployPage() {
                 className="absolute bottom-8 right-10 font-mono text-xs"
                 style={{ color: "#a8a39a" }}
               >
-                end of pipeline — that's how it ships.
+                end of pipeline — that&apos;s how it ships.
               </div>
             </div>
           </div>
