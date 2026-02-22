@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { animateBtnEnter, animateBtnLeave } from "@/lib/gsapAnimations";
 import SectionTwoCards from "@/components/SectionTwoCards";
 import AboutCards from "@/components/AboutCards";
+import Link from "next/link";
 
 const About = () => {
   const images = ["/pic1.jpg", "/pic2.jpg", "/pic3.jpg", "/pic4.jpg"];
@@ -99,20 +100,22 @@ const About = () => {
               </div>
 
               {/* Button */}
-              <button
-                ref={btnRef1}
-                onMouseEnter={() => animateBtnEnter(btnRef1.current)}
-                onMouseLeave={() => animateBtnLeave(btnRef1.current)}
-                className="w-full relative overflow-hidden text-white hover:text-black px-6 py-3 rounded-full mt-6 flex items-center gap-2 justify-center cursor-pointer"
-              >
-                {/* Animated background span */}
-                <span className="absolute left-0 top-0 h-full w-0 bg-[#f2f2ec] z-0"></span>
+              <Link href="/projects" passHref>
+                <button
+                  ref={btnRef1}
+                  onMouseEnter={() => animateBtnEnter(btnRef1.current)}
+                  onMouseLeave={() => animateBtnLeave(btnRef1.current)}
+                  className="w-full relative overflow-hidden text-white hover:text-black px-6 py-3 rounded-full mt-6 flex items-center gap-2 justify-center cursor-pointer"
+                >
+                  {/* Animated background span */}
+                  <span className="absolute left-0 top-0 h-full w-0 bg-[#f2f2ec] z-0"></span>
 
-                {/* Button text (on top) */}
-                <span className="relative z-10 flex items-center gap-2">
-                  View My Work <FaArrowRight />
-                </span>
-              </button>
+                  {/* Button text (on top) */}
+                  <span className="relative z-10 flex items-center gap-2">
+                    View My Work <FaArrowRight />
+                  </span>
+                </button>
+              </Link>
             </div>
           </section>
 
@@ -198,9 +201,11 @@ const About = () => {
               <span className="absolute left-0 top-0 h-full w-0 bg-[#f2f2ec] z-0"></span>
 
               {/* Button text (on top) */}
-              <span className="relative z-10 flex items-center gap-2">
-                How I Deploy <FaArrowRight />
-              </span>
+              <Link href="/deploy" className="inline-block">
+                <span className="relative z-10 flex items-center gap-2 cursor-pointer hover:gap-4 transition-all">
+                  How I Deploy <FaArrowRight />
+                </span>
+              </Link>
             </button>
           </section>
         </div>

@@ -668,6 +668,7 @@ export const showNavbar = (element: HTMLElement): void => {
     opacity: 1,
     duration: 0.3,
     ease: "power2.out",
+    overwrite: true, // cancel any in-progress hideNavbar tween
   });
 };
 
@@ -677,6 +678,7 @@ export const hideNavbar = (element: HTMLElement): void => {
     opacity: 0,
     duration: 0.3,
     ease: "power2.out",
+    overwrite: true, // cancel any in-progress showNavbar tween
   });
 };
 
@@ -1673,14 +1675,179 @@ export default gsapAnimations;
 
 export const initializeScrollTrigger = () => {
   if (typeof window === "undefined") return;
-  
+
   // Force ScrollTrigger to recalculate ALL positions
   ScrollTrigger.refresh(true);
-  
+
   // Also refresh on window load (for images, fonts, etc.)
-  window.addEventListener('load', () => {
+  window.addEventListener("load", () => {
     setTimeout(() => {
       ScrollTrigger.refresh(true);
     }, 100);
   });
 };
+
+//DEPLOYMENT PAGE ANIMATIONS
+// ─── Hero Panel entrance ───────────────────────────────────────────────────────
+export function animateHeroPanel(panel: HTMLElement): void {
+  const tl = gsap.timeline({ delay: 0.3 });
+
+  tl.fromTo(
+    panel.querySelector(".hero-eyebrow"),
+    { y: 24, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
+  )
+    .fromTo(
+      panel.querySelector(".hero-title"),
+      { y: 70, opacity: 0, skewY: 3 },
+      { y: 0, opacity: 1, skewY: 0, duration: 1, ease: "power4.out" },
+      "-=0.3",
+    )
+    .fromTo(
+      panel.querySelector(".hero-sub"),
+      { y: 24, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
+      "-=0.4",
+    )
+    .fromTo(
+      panel.querySelector(".hero-hint"),
+      { opacity: 0 },
+      { opacity: 1, duration: 0.8 },
+      "-=0.2",
+    );
+
+  // Pulsing arrow
+  gsap.to(panel.querySelector(".hint-arrow"), {
+    x: 10,
+    repeat: -1,
+    yoyo: true,
+    duration: 0.75,
+    ease: "sine.inOut",
+  });
+}
+
+// ─── Panel content reveal — triggered by scroll progress ratio ─────────────────
+// Called from the scroll handler when a panel becomes "active"
+export function revealPanel(panel: HTMLElement): void {
+  // Bail if already revealed
+  if (panel.dataset.revealed === "true") return;
+  panel.dataset.revealed = "true";
+
+  const tl = gsap.timeline();
+
+  const eyebrow = panel.querySelector(".panel-eyebrow");
+  const title = panel.querySelector(".panel-title");
+  const body = panel.querySelector(".panel-body");
+  const visual = panel.querySelector(".panel-visual");
+  const steps = panel.querySelectorAll(".step-item");
+  const tags = panel.querySelectorAll(".tech-tag");
+  const num = panel.querySelector(".bg-number");
+
+  if (num)
+    tl.fromTo(
+      num,
+      { opacity: 0, x: 40 },
+      { opacity: 1, x: 0, duration: 0.7, ease: "power2.out" },
+      0,
+    );
+  if (eyebrow)
+    tl.fromTo(
+      eyebrow,
+      { opacity: 0, y: 16 },
+      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+      0.1,
+    );
+  if (title)
+    tl.fromTo(
+      title,
+      { opacity: 0, y: 50, skewY: 2 },
+      { opacity: 1, y: 0, skewY: 0, duration: 0.8, ease: "power3.out" },
+      0.2,
+    );
+  if (body)
+    tl.fromTo(
+      body,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+      0.35,
+    );
+  if (visual)
+    tl.fromTo(
+      visual,
+      { opacity: 0, x: 60, scale: 0.95 },
+      { opacity: 1, x: 0, scale: 1, duration: 0.9, ease: "power3.out" },
+      0.25,
+    );
+  if (steps.length)
+    tl.fromTo(
+      steps,
+      { opacity: 0, x: 24 },
+      { opacity: 1, x: 0, duration: 0.4, stagger: 0.08, ease: "power2.out" },
+      0.4,
+    );
+  if (tags.length)
+    tl.fromTo(
+      tags,
+      { opacity: 0, y: 10, scale: 0.88 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.35,
+        stagger: 0.06,
+        ease: "back.out(1.5)",
+      },
+      0.5,
+    );
+}
+
+// ─── Terminal typewriter ───────────────────────────────────────────────────────
+export function typewriterEffect(
+  el: HTMLElement,
+  lines: string[],
+  delay = 0.6,
+): void {
+  const text = lines.join("\n");
+  const chars = text.split("");
+  let current = "";
+
+  gsap.delayedCall(delay, () => {
+    let i = 0;
+    const id = setInterval(() => {
+      current += chars[i];
+      el.textContent = current + "▌";
+      i++;
+      if (i >= chars.length) {
+        clearInterval(id);
+        el.textContent = current;
+      }
+    }, 26);
+  });
+}
+
+// ─── Animate progress bars (plain, no ScrollTrigger) ──────────────────────────
+export function animateProgressBars(container: HTMLElement): void {
+  container.querySelectorAll<HTMLElement>(".progress-fill").forEach((bar) => {
+    gsap.fromTo(
+      bar,
+      { width: "0%" },
+      {
+        width: bar.dataset.width ?? "100%",
+        duration: 1.1,
+        ease: "power2.out",
+        delay: parseFloat(bar.dataset.delay ?? "0"),
+      },
+    );
+  });
+}
+
+// ─── Float badge ───────────────────────────────────────────────────────────────
+export function floatBadge(el: HTMLElement): void {
+  gsap.to(el, {
+    y: -7,
+    duration: 2,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+}

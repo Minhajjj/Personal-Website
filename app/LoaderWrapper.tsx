@@ -19,50 +19,36 @@ export default function LoaderWrapperCrossfade({
 
   useEffect(() => {
     if (!loading) {
-      // Start showing content immediately when loading completes
       setShowContent(true);
 
-      // Crossfade animation
-      const ctx = gsap.context(() => {
-        const tl = gsap.timeline();
+      const tl = gsap.timeline();
 
-        // Fade out loader (if container still exists)
-        if (loaderContainerRef.current) {
-          tl.to(
-            loaderContainerRef.current,
-            {
-              opacity: 0,
-              duration: 0.8,
-              ease: "power2.inOut",
-            },
-            0,
-          );
-        }
+      if (loaderContainerRef.current) {
+        tl.to(
+          loaderContainerRef.current,
+          { opacity: 0, duration: 0.8, ease: "power2.inOut" },
+          0,
+        );
+      }
 
-        // Simultaneously fade in and scale up content
+      if (contentRef.current) {
         tl.fromTo(
           contentRef.current,
-          {
-            opacity: 0,
-            scale: 0.98,
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 1.2,
-            ease: "power2.out",
-          },
-          0.2, // Slight delay for smoother crossfade
+          { opacity: 0, scale: 0.98 },
+          { opacity: 1, scale: 1, duration: 1.2, ease: "power2.out" },
+          0.2,
         );
-      });
+      }
 
-      return () => ctx.revert();
+      // No ctx.revert() — we want the final state to persist
     }
   }, [loading]);
 
   return (
     <>
-      {/* Loader with container for fade control */}
+      {/* Navbar lives outside everything — never affected by any opacity/visibility */}
+      {!loading && <Navbar />}
+
       {loading && (
         <div ref={loaderContainerRef}>
           <MinhajLoader
@@ -72,20 +58,16 @@ export default function LoaderWrapperCrossfade({
         </div>
       )}
 
-      {/* Content - hidden initially, fades in on load complete */}
       <div
         ref={contentRef}
         style={{
-          opacity: showContent ? 0 : 0,
+          opacity: 0,
           visibility: showContent ? "visible" : "hidden",
           willChange: "transform, opacity",
         }}
       >
         <LenisProvider>
-          <ScrollTriggerProvider>
-            <Navbar />
-            {children}
-          </ScrollTriggerProvider>
+          <ScrollTriggerProvider>{children}</ScrollTriggerProvider>
         </LenisProvider>
       </div>
     </>
