@@ -19,69 +19,49 @@ const Hero = () => {
   const href1 = useRef<HTMLHeadingElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Ensure component is mounted
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Use useLayoutEffect for synchronous animations BEFORE paint
   useLayoutEffect(() => {
     if (!isMounted || typeof window === "undefined") return;
 
-    // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
-      // Initialize all animations
-      if (minhajRef.current?.text) {
-        animateMinhaj(minhajRef.current);
-      }
-
-      if (dref1.current) {
-        animateHeroDiv(dref1.current);
-      }
-
-      if (para1Ref.current && para2Ref.current) {
+      if (minhajRef.current?.text) animateMinhaj(minhajRef.current);
+      if (dref1.current) animateHeroDiv(dref1.current);
+      if (para1Ref.current && para2Ref.current)
         animateLines([para1Ref.current, para2Ref.current]);
-      }
+      if (href1.current) animateHeading(href1.current);
 
-      if (href1.current) {
-        animateHeading(href1.current);
-      }
-
-      // CRITICAL: Refresh ScrollTrigger after ALL animations are set up
       setTimeout(() => {
         ScrollTrigger.refresh(true);
-        console.log("✅ ScrollTrigger refreshed");
       }, 100);
     }, 50);
 
     return () => clearTimeout(timer);
   }, [isMounted]);
 
-  // Additional refresh on window load (for fonts, images)
   useEffect(() => {
     if (typeof window === "undefined") return;
-
     const handleLoad = () => {
-      setTimeout(() => {
-        ScrollTrigger.refresh(true);
-        console.log("✅ ScrollTrigger refreshed on load");
-      }, 200);
+      setTimeout(() => ScrollTrigger.refresh(true), 200);
     };
-
     window.addEventListener("load", handleLoad);
-
     return () => window.removeEventListener("load", handleLoad);
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center mb-40 gap-50 px-4 sm:px-6 md:px-0">
+    // ❌ removed justify-center (was pushing content down)
+    // ❌ removed px-4 sm:px-6 (was shrinking Minhaj's available width)
+    <div className="min-h-screen flex flex-col mb-40 gap-50">
       <section>
+        {/* Minhaj: NO horizontal padding — must touch both edges */}
         <Minhaj ref={minhajRef} />
-        <div className="font-mono font-semibold mt-4 flex flex-col gap-50 text-md md:flex-row md:items-start md:justify-between">
-          <p ref={para1Ref} className="pl-3 md:pl-5 lg:pl-8">
-            CREATIVE STUDIO
-          </p>
-          <p ref={para2Ref} className="pl-3 md:pl-5 lg:pl-8 lg:pr-13">
+
+        {/* Padding lives here, only on the subtitle row */}
+        <div className="font-mono font-semibold mt-4 flex flex-col gap-50 text-md md:flex-row md:items-start md:justify-between px-4 sm:px-6 md:px-8">
+          <p ref={para1Ref}>CREATIVE STUDIO</p>
+          <p ref={para2Ref}>
             HELPING FORWARD-THINKING BUSINESSES LEAVE A LASTING IMPRESSION
           </p>
         </div>
@@ -112,7 +92,7 @@ const Hero = () => {
       </section>
 
       <section>
-        <div className="mt-15 flex justify-center flex-col items-center gap-10 px-3 md:px-0 ">
+        <div className="mt-15 flex justify-center flex-col items-center gap-10 px-3 md:px-0">
           <p className="text-3xl font-semibold font-sans">
             Let's get you closer to your goals
           </p>

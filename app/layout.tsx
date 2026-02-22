@@ -3,9 +3,7 @@ import { Bebas_Neue } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import LenisProvider from "@/components/LenisProvider";
-import ScrollTriggerProvider from "@/components/ScrollTriggerProvider";
+import LoaderWrapper from "./LoaderWrapper";
 
 export const metadata: Metadata = {
   title: "Minhaj",
@@ -28,12 +26,7 @@ export default function RootLayout({
       <body
         className={`${bebas.variable} ${GeistSans.variable} ${GeistMono.variable} font-sans`}
       >
-        <LenisProvider>
-          <ScrollTriggerProvider>
-            <Navbar />
-            {children}
-          </ScrollTriggerProvider>
-        </LenisProvider>
+        <LoaderWrapper>{children}</LoaderWrapper>
       </body>
     </html>
   );
