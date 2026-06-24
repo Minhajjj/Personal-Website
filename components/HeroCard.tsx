@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { GoGoal } from "react-icons/go";
 import { IoChatbubbleEllipsesOutline } from "react-icons/io5";

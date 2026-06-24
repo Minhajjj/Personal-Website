@@ -1,3 +1,5 @@
+"use client";
+
 import { animateIcons, animateRings } from "@/lib/gsapAnimations";
 import React, { JSX, useEffect, useRef, useState } from "react";
 import gsap from "gsap";

@@ -26,6 +26,54 @@ body {
   font-family: var(--font-geist, sans-serif);
 }
 
+/* Reserve space for fixed bottom navbar */
+@media (max-width: 1279px) {
+  body {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Deploy page panel responsiveness */
+.deploy-panel {
+  padding: 3rem 5vw 5rem;
+  align-items: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@media (min-width: 768px) {
+  .deploy-panel {
+    padding: 0 7vw;
+    align-items: center;
+    overflow-y: hidden;
+  }
+}
+
+.deploy-panel-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+  max-width: 88rem;
+}
+
+@media (min-width: 768px) {
+  .deploy-panel-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+}
+
 .Minhaj {
   /* overflow: hidden; */
   display: flex;

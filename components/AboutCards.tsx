@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef } from "react";
 import { LiaCompass } from "react-icons/lia";
 import { IoMdColorPalette } from "react-icons/io";

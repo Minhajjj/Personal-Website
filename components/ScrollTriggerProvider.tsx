@@ -24,15 +24,12 @@ export default function ScrollTriggerProvider({
     document.fonts.ready.then(() => {
       setTimeout(() => {
         ScrollTrigger.refresh(true);
-        console.log("✅ ScrollTrigger refreshed after fonts");
       }, 100);
     });
 
-    // Refresh on window load
     const handleLoad = () => {
       setTimeout(() => {
         ScrollTrigger.refresh(true);
-        console.log("✅ ScrollTrigger refreshed on load");
       }, 200);
     };
 
@@ -44,7 +41,6 @@ export default function ScrollTriggerProvider({
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         ScrollTrigger.refresh(true);
-        console.log("✅ ScrollTrigger refreshed on resize");
       }, 250);
     };
 

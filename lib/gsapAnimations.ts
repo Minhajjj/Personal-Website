@@ -551,11 +551,7 @@ export const initializeFooterAnimations = () => {
   const footer = document.querySelector(".footer-animation");
   const aboveSection = document.querySelector(".above-section");
 
-  console.log("Footer:", footer);
-  console.log("Above section:", aboveSection);
-
   if (!footer || !aboveSection) {
-    console.warn("Footer or above section not found");
     return;
   }
 
@@ -589,16 +585,12 @@ export const initializeFooterAnimations = () => {
         });
       },
       onEnter: () => {
-        console.log("Footer shutter animation started");
-        // Add a dramatic shadow to the above section
         gsap.to(aboveSection, {
           boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
           duration: 0.8,
         });
       },
-      onLeave: () => {
-        console.log("Footer shutter animation ended");
-      },
+      onLeave: () => {},
       onEnterBack: () => {
         // Remove shadow when scrolling back up
         gsap.to(aboveSection, {

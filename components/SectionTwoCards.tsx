@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef } from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FiActivity } from "react-icons/fi";

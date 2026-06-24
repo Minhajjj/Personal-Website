@@ -42,12 +42,23 @@ const Minhaj = forwardRef<MinhajRef>((props, ref) => {
   }, []);
 
   useEffect(() => {
-    fitText();
-    document.fonts.ready.then(fitText);
+    let frame = 0;
 
-    const observer = new ResizeObserver(fitText);
+    const scheduleFit = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(fitText);
+    };
+
+    scheduleFit();
+    document.fonts.ready.then(scheduleFit);
+
+    const observer = new ResizeObserver(scheduleFit);
     observer.observe(document.documentElement);
-    return () => observer.disconnect();
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
   }, [fitText]);
 
   return (
