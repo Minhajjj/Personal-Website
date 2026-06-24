@@ -59,7 +59,7 @@ const Navbar = () => {
   const isActive = (href: string) => {
     if (!mounted) return false;
     if (href === "/") return pathname === "/";
-    if (href.startsWith("/#")) return pathname === "/";
+    if (href.startsWith("/#")) return false; // Prevent hash links from highlighting simultaneously
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 

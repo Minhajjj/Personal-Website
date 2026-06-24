@@ -30,8 +30,8 @@ export default function LenisProvider({
 
   // GSAP ticker integration
   useEffect(() => {
-    // Disable Lenis on project page for desktop/tablet
-    if (isProjectPage && !isMobile) return;
+    // Disable Lenis on mobile devices, or on project page for desktop/tablet
+    if (isMobile || (isProjectPage && !isMobile)) return;
 
     function update(time: number) {
       lenisRef.current?.lenis?.raf(time * 1000);
@@ -41,8 +41,8 @@ export default function LenisProvider({
     return () => gsap.ticker.remove(update);
   }, [isProjectPage, isMobile]);
 
-  // Don't render Lenis wrapper on project page for desktop/tablet
-  if (isProjectPage && !isMobile) {
+  // Don't render Lenis wrapper on mobile devices, or on project page for desktop/tablet
+  if (isMobile || (isProjectPage && !isMobile)) {
     return <>{children}</>;
   }
 
