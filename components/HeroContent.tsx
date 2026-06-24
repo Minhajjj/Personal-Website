@@ -12,6 +12,38 @@ import {
 import { useRef, useEffect, useLayoutEffect, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+const TypewriterText = ({ 
+  text, 
+  delay = 50, 
+  start = true, 
+  onComplete 
+}: { 
+  text: string, 
+  delay?: number, 
+  start?: boolean, 
+  onComplete?: () => void 
+}) => {
+  const [displayedText, setDisplayedText] = useState("");
+
+  useEffect(() => {
+    if (!start) return;
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setDisplayedText(text.substring(0, i));
+      if (i >= text.length) {
+        clearInterval(interval);
+        if (onComplete) onComplete();
+      }
+    }, delay);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [start, text, delay]);
+
+  // Add a blinking cursor or minimal min-height if desired, but returning text is enough.
+  return <span>{displayedText}</span>;
+};
+
 export default function HeroContent() {
   const minhajRef = useRef<MinhajRef>(null);
   const para1Ref = useRef<HTMLParagraphElement>(null);
@@ -19,9 +51,15 @@ export default function HeroContent() {
   const dref1 = useRef<HTMLDivElement>(null);
   const href1 = useRef<HTMLHeadingElement>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [line1Done, setLine1Done] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useLayoutEffect(() => {
@@ -30,8 +68,12 @@ export default function HeroContent() {
     const timer = setTimeout(() => {
       if (minhajRef.current?.text) animateMinhaj(minhajRef.current);
       if (dref1.current) animateHeroDiv(dref1.current);
-      if (para1Ref.current && para2Ref.current)
-        animateLines([para1Ref.current, para2Ref.current]);
+      if (para1Ref.current && para2Ref.current) {
+        // Only run GSAP scroll animations on these lines if not on mobile
+        if (window.innerWidth >= 768) {
+          animateLines([para1Ref.current, para2Ref.current]);
+        }
+      }
       if (href1.current) animateHeading(href1.current);
 
       setTimeout(() => {
@@ -57,9 +99,27 @@ export default function HeroContent() {
         <Minhaj ref={minhajRef} />
 
         <div className="font-mono font-semibold mt-4 flex flex-col gap-4 md:gap-50 text-sm md:text-md md:flex-row md:items-start md:justify-between px-4 sm:px-6 md:px-8">
-          <p ref={para1Ref}>CREATIVE STUDIO</p>
-          <p ref={para2Ref} className="max-w-xl">
-            HELPING FORWARD-THINKING BUSINESSES LEAVE A LASTING IMPRESSION
+          <p ref={para1Ref} className="min-h-[1.5rem]">
+            {isMobile && isMounted ? (
+              <TypewriterText 
+                text="CREATIVE STUDIO" 
+                delay={50} 
+                onComplete={() => setLine1Done(true)} 
+              />
+            ) : (
+              "CREATIVE STUDIO"
+            )}
+          </p>
+          <p ref={para2Ref} className="max-w-xl min-h-[3rem]">
+            {isMobile && isMounted ? (
+              <TypewriterText 
+                text="HELPING FORWARD-THINKING BUSINESSES LEAVE A LASTING IMPRESSION" 
+                delay={40} 
+                start={line1Done} 
+              />
+            ) : (
+              "HELPING FORWARD-THINKING BUSINESSES LEAVE A LASTING IMPRESSION"
+            )}
           </p>
         </div>
 

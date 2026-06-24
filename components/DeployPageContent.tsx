@@ -358,6 +358,27 @@ export default function DeployPageContent() {
     const bar = progressRef.current;
     if (!outer || !track) return;
 
+    if (window.innerWidth < 768) {
+      // On mobile, use native vertical stacking
+      track.style.transform = `none`;
+      
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = scrollHeight > 0 ? Math.max(0, Math.min(1, window.scrollY / scrollHeight)) : 0;
+      if (bar) bar.style.width = `${scrolled * 100}%`;
+
+      // Reveal panels
+      const panels = track.querySelectorAll<HTMLElement>(".deploy-panel");
+      panels.forEach((panel, i) => {
+        if (i === 0) return;
+        const rect = panel.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.8 && !revealedRef.current.has(i)) {
+          revealedRef.current.add(i);
+          revealPanel(panel);
+        }
+      });
+      return;
+    }
+
     const outerRect = outer.getBoundingClientRect();
     const totalScrollable = outer.offsetHeight - window.innerHeight;
 
@@ -434,6 +455,27 @@ export default function DeployPageContent() {
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
         .deploy-page { font-family: 'IBM Plex Mono', monospace; }
         .deploy-page h1, .deploy-page h2 { font-family: 'Syne', sans-serif; }
+
+        @media (max-width: 768px) {
+          .deploy-page { height: auto !important; }
+          .deploy-sticky {
+            position: relative !important;
+            height: auto !important;
+            overflow: visible !important;
+          }
+          .deploy-track {
+            flex-direction: column !important;
+            width: 100% !important;
+            height: auto !important;
+            transform: none !important;
+          }
+          .deploy-panel {
+            width: 100% !important;
+            height: auto !important;
+            min-height: 100vh;
+            overflow: visible !important;
+          }
+        }
       `}</style>
 
       {/* Top progress bar — fixed, always visible */}
@@ -468,6 +510,7 @@ export default function DeployPageContent() {
         */}
         <div
           ref={stickyRef}
+          className="deploy-sticky"
           style={{
             position: "sticky",
             top: 0,
@@ -482,6 +525,7 @@ export default function DeployPageContent() {
           */}
           <div
             ref={trackRef}
+            className="deploy-track"
             style={{
               display: "flex",
               flexWrap: "nowrap",
