@@ -135,7 +135,7 @@ const MinhajLoader: React.FC<LoaderProps> = ({
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#D9D7CB]"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-[#D9D7CB]"
       style={{
         willChange: "transform, opacity",
       }}

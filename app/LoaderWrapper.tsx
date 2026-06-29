@@ -5,6 +5,7 @@ import MinhajLoader from "@/components/MinhajLoader";
 import LenisProvider from "@/components/LenisProvider";
 import ScrollTriggerProvider from "@/components/ScrollTriggerProvider";
 import Navbar from "@/components/Navbar";
+import { GlassDock } from "@/components/ui/glass-dock";
 import { gsap } from "gsap";
 
 export default function LoaderWrapperCrossfade({
@@ -47,13 +48,29 @@ export default function LoaderWrapperCrossfade({
   return (
     <>
       {/* Navbar lives outside everything — never affected by any opacity/visibility */}
-      {!loading && <Navbar />}
+      {/* {!loading && <Navbar />} */}
+
+      {!loading && (
+        <GlassDock
+          items={[
+            { title: "Home", icon: "home", href: "/" },
+            { title: "Projects", icon: "projects", href: "/projects" },
+            { title: "Services", icon: "services", href: "/#services" },
+            { title: "Contact", icon: "contact", href: "/contact" },
+            { title: "Deploy", icon: "deploy", href: "/deploy" },
+          ]}
+          // Customize these props to adjust the navbar size
+          mobileMaxWidth="92%" // Width on mobile (default: "95%")
+          dockPadding="px-5 sm:px-8 py-3 sm:py-4" // Custom padding
+          dockWidth="400px"
+        />
+      )}
 
       {loading && (
         <div ref={loaderContainerRef}>
           <MinhajLoader
             onLoadingComplete={() => setLoading(false)}
-            duration={3}
+            duration={2}
           />
         </div>
       )}
