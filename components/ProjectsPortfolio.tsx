@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { FaExternalLinkAlt } from "react-icons/fa";
 import { gsapAnimations } from "@/lib/gsapAnimations";
 import Image from "next/image";
 
@@ -142,8 +141,6 @@ const VerticalScrollPortfolio: React.FC = () => {
     if (!container) return;
 
     const handleScroll = () => {
-      const scrollCenter = container.scrollTop + container.clientHeight / 2;
-
       let closestProjectIndex = 0;
       let minDistance = Infinity;
 
@@ -294,7 +291,7 @@ const VerticalScrollPortfolio: React.FC = () => {
             overflowY: "hidden",
           }}
         >
-          {PROJECTS.map((project, pIndex) => (
+          {PROJECTS.map((project) => (
             <div
               key={project.id}
               className="min-w-full snap-center flex flex-col flex-shrink-0"

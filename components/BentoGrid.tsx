@@ -463,7 +463,7 @@ function QuoteCard() {
           animate={inView ? { opacity: [0, 1], scale: [0.6, 1] } : {}}
           transition={{ duration: 0.5 }}
         >
-          "
+          &ldquo;
         </motion.span>
         <p className="text-[13px] italic leading-relaxed" style={{ color: C.muted }}>
           {words.map((word, i) => (

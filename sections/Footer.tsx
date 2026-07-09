@@ -1,3 +1,4 @@
+import Link from "next/link";
 import FooterAnimationInit from "@/components/FooterAnimationInit";
 
 const Footer = () => {
@@ -15,34 +16,34 @@ const Footer = () => {
       <div className="mt-auto mb-24 md:mb-20 px-4">
         <p className="text-sm text-[#C4C2B7] mb-6 tracking-widest">SITEMAP</p>
         <nav className="flex flex-col text-left text-xl md:text-2xl font-medium space-y-3">
-          <a
+          <Link
             href="/#about"
             className="hover:text-[#D9D7AF] transition-colors duration-300"
             aria-label="Navigate to About section"
           >
             About
-          </a>
-          <a
+          </Link>
+          <Link
             href="/#services"
             className="hover:text-[#D9D7AF] transition-colors duration-300"
             aria-label="Navigate to Services section"
           >
             Services
-          </a>
-          <a
+          </Link>
+          <Link
             href="/projects"
             className="hover:text-[#D9D7AF] transition-colors duration-300"
             aria-label="Navigate to Projects page"
           >
             Projects
-          </a>
-          <a
+          </Link>
+          <Link
             href="/contact"
             className="hover:text-[#D9D7AF] transition-colors duration-300"
             aria-label="Navigate to Contact page"
           >
             Contact
-          </a>
+          </Link>
         </nav>
       </div>
 

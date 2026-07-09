@@ -1,7 +1,7 @@
 "use client";
 
 import HeroCard from "@/components/HeroCard";
-import Minhaj, { MinhajRef } from "@/components/Name";
+import { MinhajRef } from "@/components/Name";
 import Image from "next/image";
 import Orbit from "@/components/Orbit";
 import {
@@ -32,6 +32,8 @@ const TypewriterText = ({
   onComplete?: () => void;
 }) => {
   const [displayedText, setDisplayedText] = useState("");
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     if (!start) return;
@@ -41,7 +43,7 @@ const TypewriterText = ({
       setDisplayedText(text.substring(0, i));
       if (i >= text.length) {
         clearInterval(interval);
-        if (onComplete) onComplete();
+        onCompleteRef.current?.();
       }
     }, delay);
     return () => clearInterval(interval);

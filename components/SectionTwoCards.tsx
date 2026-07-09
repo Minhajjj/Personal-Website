@@ -16,7 +16,6 @@ const SectionTwoCards: React.FC<SectionTwoCardsInfoProps> = ({
   title,
   description,
   points,
-  link, // Accept link prop
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);

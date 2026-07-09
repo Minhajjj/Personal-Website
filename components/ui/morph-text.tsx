@@ -29,7 +29,6 @@ export interface MorphTextProps {
 
 export function MorphText({
   // ─── DEFAULTS ─────────────────────────────────────────────────────────────
-  staticPrefix = "MINHAJ",              // ADJUSTABLE: your static name / word
   words = ["CREATE", "DESIGN", "DEPLOY"], // ADJUSTABLE: morphing words
   interval = 3500,                       // ADJUSTABLE: ms per word
   fontSize = "clamp(3rem, 12vw, 12rem)", // ADJUSTABLE: display size

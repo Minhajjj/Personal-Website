@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import MinhajLoader from "@/components/MinhajLoader";
 import LenisProvider from "@/components/LenisProvider";
 import ScrollTriggerProvider from "@/components/ScrollTriggerProvider";
-import Navbar from "@/components/Navbar";
 import { GlassDock } from "@/components/ui/glass-dock";
 import { gsap } from "gsap";
 

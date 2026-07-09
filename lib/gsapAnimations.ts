@@ -103,7 +103,7 @@ export const animateHeading = (heading: HTMLElement | null) => {
 };
 
 export const animateIcons = (icons: (HTMLElement | null)[]) => {
-  icons.forEach((icon, index) => {
+  icons.forEach((icon) => {
     if (!icon) return;
 
     gsap.fromTo(
@@ -603,7 +603,7 @@ export const initializeFooterAnimations = () => {
     // Footer content reveal animation
     const footerChildren = Array.from(footer.children);
 
-    footerChildren.forEach((child, index) => {
+    footerChildren.forEach((child) => {
       gsap.fromTo(
         child,
         {
@@ -1113,19 +1113,8 @@ export class ProjectAnimations {
   /**
    * Initialize entrance animations - SIMPLE AND CLEAN
    */
-  public initEntranceAnimations(
-    refs: ProjectAnimationRefs,
-    index: number,
-  ): void {
-    const {
-      cardRef,
-      imageRef,
-      titleRef,
-      categoryBarRef,
-      techStackRef,
-      linksRef,
-      numberRef,
-    } = refs;
+  public initEntranceAnimations(refs: ProjectAnimationRefs): void {
+    const { cardRef, titleRef, categoryBarRef, numberRef } = refs;
 
     if (!cardRef.current) return;
 
@@ -1249,13 +1238,8 @@ export class ProjectAnimations {
       overlayRef,
       badgeRef,
       actionButtonsRef,
-      numberRef,
-      categoryBarRef,
       titleRef,
-      techStackRef,
-      linksRef,
       backgroundGradientRef,
-      cornerAccentRef,
     } = refs;
 
     if (!cardRef.current) return;
